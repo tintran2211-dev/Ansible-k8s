@@ -12,7 +12,7 @@
 
 - name: Generate admin.conf from template
   ansible.builtin.template:
-    src: admin.conf.j2
+    src: kube-config.j2
     dest: "/home/{{ ansible_user }}/.kube/config"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"

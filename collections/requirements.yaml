@@ -3,4 +3,6 @@ collections:
   - name: ansible.utils
   - name: community.general
   - name: ansible.posix
-  - name: kubernetes.core
+  - name: Community.docker
+  - name: community.kubernetes
+  - name: community.helm
