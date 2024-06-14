@@ -10,6 +10,33 @@
     group: "{{ ansible_user }}"
     mode: '0755'
 
+- name: Read CA certificate
+  ansible.builtin.slurp:
+    src: /etc/kubernetes/pki/ca.crt
+  register: ca_cert_content
+
+- name: Read admin certificate
+  ansible.builtin.slurp:
+    src: /etc/kubernetes/pki/admin.crt
+  register: admin_cert_content
+
+- name: Read admin key
+  ansible.builtin.slurp:
+    src: /etc/kubernetes/pki/admin.key
+  register: admin_key_content
+
+- name: Set Kubernetes certificate variables
+  ansible.builtin.set_fact:
+    kubernetes_ca_cert_base64_encoded_content: "{{ ca_cert_content.content | b64decode | b64encode }}"
+    kubernetes_admin_cert_base64_encoded_content: "{{ admin_cert_content.content | b64decode | b64encode }}"
+    kubernetes_admin_key_base64_encoded_content: "{{ admin_key_content.content | b64decode | b64encode }}"
+
+- name: Assign kube_ca_cert, kube_admin_cert, kube_admin_key variables
+  ansible.builtin.set_fact:
+    kube_ca_cert: "{{ kubernetes_ca_cert_base64_encoded_content }}"
+    kube_admin_cert: "{{ kubernetes_admin_cert_base64_encoded_content }}"
+    kube_admin_key: "{{ kubernetes_admin_key_base64_encoded_content }}"
+
 - name: Generate admin.conf from template
   ansible.builtin.template:
     src: templates/kube-config.j2
