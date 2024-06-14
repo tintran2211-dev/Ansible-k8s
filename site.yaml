@@ -1,35 +1,35 @@
 - name: Update all nodes
-  hosts: masters, workers
+  hosts: servers, workers
   gather_facts: true
   roles:
     - role: update-nodes
 
 - name: Prepare all nodes
-  hosts: masters, workers
+  hosts: servers, workers
   gather_facts: true
   roles:
     - role: prepare-nodes
 
 - name: Install containerd
-  hosts: masters, workers
+  hosts: servers, workers
   gather_facts: true
   roles:
     - role: install-containerd
 
 - name: Install environment kubectl
-  hosts: masters, workers
+  hosts: servers, workers
   gather_facts: true
   roles:
     - role: install-environment
 
 - name: Initialize Kubernetes cluster
-  hosts: masters
+  hosts: servers
   gather_facts: true
   roles:
     - role: init-cluster
 
 - name: Fetch join command
-  hosts: masters
+  hosts: servers
   gather_facts: true
   roles:
     - role: fetch-joincommand
