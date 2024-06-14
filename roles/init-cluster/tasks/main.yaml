@@ -1,0 +1,39 @@
+- name: Initialize Kubernetes
+  ansible.builtin.command: sudo kubeadm init
+  register: kubeadm_init_result
+
+- name: Create .kube directory
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Generate admin.conf from template
+  ansible.builtin.template:
+    src: admin.conf.j2
+    dest: "/home/{{ ansible_user }}/.kube/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+  vars:
+    kube_server: "{{ hostvars[inventory_hostname]['ansible_host'] }}"  # Replace with your server IP or hostname
+
+- name: Store join command in a fact
+  ansible.builtin.set_fact:
+    join_command: "{{ kubeadm_init_result.stdout | regex_search('kubeadm join\\s.*\\n\\s*--discovery-token-ca-cert-hash\\s.*') }}"
+
+- name: Save join command to a file
+  ansible.builtin.copy:
+    content: "{{ join_command }}"
+    dest: "/home/{{ ansible_user }}/join_command.txt"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Install Calico CNI plugin
+  ansible.builtin.command:
+    cmd: kubectl apply -f https://docs.projectcalico.org/v3.16/manifests/calico.yaml
+    environment:
+      KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"

@@ -1,0 +1,32 @@
+# B4: Add Kubernetes APT repository
+- name: Add Kubernetes apt key to apt keyring
+  ansible.builtin.shell: "curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
+
+- name: Add Kubernetes repository
+  ansible.builtin.copy:
+    content: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /'
+    dest: /etc/apt/sources.list.d/kubernetes.list
+
+# B5: Install kubectl, kubeadm, and kubelet
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Kubernetes components
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop: 
+    - kubelet
+    - kubeadm
+    - kubectl
+
+- name: Hold Kubernetes packages at current version
+  ansible.builtin.command: apt-mark hold kubelet kubeadm kubectl
+  register: hold_result
+  ignore_errors: yes  # Ignoring errors if the packages were already on hold
+
+- name: Debug hold result
+  ansible.builtin.debug:
+    msg: "{{ hold_result.stdout }}"
+  when: hold_result.rc == 0 and hold_result.stdout is defined

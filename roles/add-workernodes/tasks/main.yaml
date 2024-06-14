@@ -1,0 +1,9 @@
+    - name: Include join command from master
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/join_command.yml"
+      register: join_command_vars
+
+    - name: Join the node to Kubernetes cluster
+      ansible.builtin.shell:
+        cmd: "{{ join_command_vars.join_command }}"
+      when: join_command_vars.join_command is defined
