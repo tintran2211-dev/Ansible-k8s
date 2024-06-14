@@ -1,0 +1,33 @@
+    # B2: Disable Swap & Add Kernel Parameters
+    - name: Turn off swap
+      command: swapoff -a
+
+    - name: Remove swap from fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^\s*(\S+)\s+swap\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$'
+        replace: '#\1 swap \2 \3 \4 \5 \6'
+
+    - name: Load kernel modules
+      copy:
+        content: |
+          overlay
+          br_netfilter
+        dest: /etc/modules-load.d/containerd.conf
+
+    - name: Ensure overlay module is loaded
+      command: modprobe overlay
+
+    - name: Ensure br_netfilter module is loaded
+      command: modprobe br_netfilter
+
+    - name: Set kernel parameters for Kubernetes
+      copy:
+        content: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+          net.ipv4.ip_forward = 1
+        dest: /etc/sysctl.d/kubernetes.conf
+
+    - name: Apply sysctl parameters without reboot
+      command: sysctl --system

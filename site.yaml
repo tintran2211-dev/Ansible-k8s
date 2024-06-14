@@ -1,0 +1,13 @@
+- name: Update all nodes
+  hosts: masters, workers
+  gather_facts: true
+  roles:
+    - update-nodes
+
+- name: Prepare all nodes
+  hosts: masters, workers
+  gather_facts: true
+  roles:
+    - prepare-nodes
+
+- 
