@@ -9,7 +9,7 @@
 
 - name: Save join command to a file
   ansible.builtin.template:
-    src: join_command.txt.j2
+    src: templates/join_command.txt.j2
     dest: "/home/{{ ansible_user }}/join_command.txt"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
