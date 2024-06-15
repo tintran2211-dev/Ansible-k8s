@@ -15,16 +15,20 @@
   roles:
     - role: init-cluster
 
-- name: Fetch join command
-  hosts: servers
-  gather_facts: true
-  become: yes
-  roles:
-    - role: fetch-joincommand
+- name: Set join command for worker nodes
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Set join command fact for all hosts
+      ansible.builtin.set_fact:
+        join_command: "{{ hostvars[groups['servers'][0]].join_command }}"
+      delegate_to: localhost
 
-- name: Add worker nodes to cluster
+- name: Join worker nodes to Kubernetes cluster
   hosts: workers
   gather_facts: true
   become: yes
   roles:
-    - role: add-workernodes
+    - role: join-worker-nodes
+
+

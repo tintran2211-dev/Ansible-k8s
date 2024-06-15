@@ -1,8 +1,24 @@
-- name: Include join command from generated file
-  ansible.builtin.include_vars:
-    file: "/home/{{ ansible_user }}/join_command.txt"
+---
+- name: Check if kubelet config exists
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_config
+
+- name: Set fact if this is a new node
+  ansible.builtin.set_fact:
+    is_new_node: "{{ not kubelet_config.stat.exists }}"
+
+- name: Debug message for new node
+  ansible.builtin.debug:
+    msg: "This is a new node: {{ inventory_hostname }}"
+  when: is_new_node
+
+- name: Debug message for existing node
+  ansible.builtin.debug:
+    msg: "Node {{ inventory_hostname }} is already part of the cluster"
+  when: not is_new_node
 
 - name: Join the node to Kubernetes cluster
   ansible.builtin.shell:
-    cmd: "{{ join_command }}"
-  when: join_command is defined
+    cmd: "{{ hostvars[groups['servers'][0]].join_command }}"
+  when: is_new_node
