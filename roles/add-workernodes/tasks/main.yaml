@@ -1,3 +1,8 @@
-- name: Join worker nodes to Kubernetes cluster
+- name: Include join command from generated file
+  ansible.builtin.include_vars:
+    file: "/home/{{ ansible_user }}/join_command.txt"
+
+- name: Join the node to Kubernetes cluster
   ansible.builtin.shell:
-    cmd: "bash /home/{{ ansible_user }}/join_command.txt"
+    cmd: "{{ join_command }}"
+  when: join_command is defined
