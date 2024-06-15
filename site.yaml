@@ -34,6 +34,12 @@
   roles:
     - role: fetch-joincommand
 
+- name: Fetch join command
+  hosts: servers
+  gather_facts: true
+  roles:
+    - role: copy-token
+
 - name: Add worker nodes to cluster
   hosts: workers
   gather_facts: true

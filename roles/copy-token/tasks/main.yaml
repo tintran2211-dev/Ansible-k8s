@@ -1,0 +1,9 @@
+- name: Copy join_command.txt to worker nodes
+  ansible.builtin.copy:
+    src: "/home/{{ ansible_user }}/join_command.txt"
+    dest: "/home/{{ ansible_user }}/join_command.txt"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['workers'] }}"
