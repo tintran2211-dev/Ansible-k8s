@@ -60,6 +60,11 @@
 
 - name: Install Calico CNI plugin
   ansible.builtin.command:
-    cmd: kubectl apply -f https://docs.projectcalico.org/v3.16/manifests/calico.yaml
-    environment:
-      KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
+    cmd: kubectl apply -f https://docs.projectcalico.org/v3.16/manifests/calico.yaml --kubeconfig=/home/{{ ansible_user }}/.kube/config
+
+
+# - name: Install Calico CNI plugin
+#   ansible.builtin.shell:
+#     cmd: kubectl apply -f https://docs.projectcalico.org/v3.16/manifests/calico.yaml
+#     environment:
+#       KUBECONFIG: "/home/{{ ansible_user }}/.kube/config"
