@@ -15,6 +15,13 @@
   roles:
     - role: init-cluster
 
+- name: Fetch join command from master
+  hosts: servers
+  gather_facts: true
+  become: yes
+  roles:
+    - role: fetch-joincommand
+
 - name: Set join command for worker nodes
   hosts: localhost
   gather_facts: false
@@ -29,6 +36,6 @@
   gather_facts: true
   become: yes
   roles:
-    - role: join-worker-nodes
+    - role: add-workernodes
 
 
