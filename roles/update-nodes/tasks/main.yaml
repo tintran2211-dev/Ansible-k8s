@@ -3,3 +3,12 @@
     update_cache: yes
     upgrade: dist
     force_apt_get: yes
+
+- name: Install essential packages
+  ansible.builtin.apt:
+    name:
+      - nano
+      - iptables
+      - curl
+      - git
+    state: present
