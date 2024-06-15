@@ -1,12 +1,9 @@
-- name: Read join command from master
-  ansible.builtin.slurp:
-    src: "/home/{{ ansible_user }}/join_command.txt"
-  register: join_command_slurp
+- name: Include join command from generated file
+  ansible.builtin.include_vars:
+    file: "/home/{{ ansible_user }}/join_command.txt"
+  register: join_command_vars
 
-- name: Set join command fact
-  ansible.builtin.set_fact:
-    join_command: "{{ join_command_slurp.content | b64decode | trim }}"
-
-- name: Join the node to Kubernetes cluster
+- name: Join worker node to Kubernetes cluster
   ansible.builtin.shell:
-    cmd: "{{ join_command }}"
+    cmd: "{{ join_command_vars['ansible_facts']['content'] }}"
+  when: join_command_vars is defined
