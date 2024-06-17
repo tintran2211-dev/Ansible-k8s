@@ -4,19 +4,27 @@
   become: yes
 
   tasks:
+    - name: Update and upgrade the system
+      ansible.builtin.command: sudo apt update && sudo apt upgrade -y
+      register: upgrade_result
+      changed_when: "'0 upgraded' not in upgrade_result.stdout"
+      
+    - name: Remove old Docker packages
+      ansible.builtin.shell: |
+        for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
+          sudo apt-get remove -y $pkg
+        done
+
     - name: Update the apt package index
       ansible.builtin.apt:
         update_cache: yes
-        upgrade: dist
         force_apt_get: yes
 
     - name: Install required packages
       ansible.builtin.apt:
-        name: 
+        name:
           - ca-certificates
           - curl
-          - gnupg
-          - lsb-release
         state: present
         force_apt_get: yes
 
@@ -37,27 +45,19 @@
         mode: '0644'
 
     - name: Add Docker's apt repository
-      ansible.builtin.command:
-        cmd: >
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable"
-          | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      ansible.builtin.command: |
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" |
+        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    - name: Update the apt package index after adding Docker's repository
-      ansible.builtin.apt:
-        update_cache: yes
-        force_apt_get: yes
-
-    - name: Wait for 25 seconds before running Rancher
-      ansible.builtin.wait_for:
-        timeout: 25
+    - name: Update and upgrade the system after adding Docker repository
+      ansible.builtin.command: sudo apt-get update && sudo apt update && sudo apt upgrade -y
 
     - name: Install Docker packages using command
-      ansible.builtin.command:
-        cmd: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      ansible.builtin.command: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-    - name: Wait for 40 seconds before running Rancher
+    - name: Wait for 20 seconds before running Rancher
       ansible.builtin.wait_for:
-        timeout: 40
+        timeout: 20
 
     - name: Run Rancher container
       ansible.builtin.command:
