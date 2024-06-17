@@ -4,10 +4,11 @@
   become: yes
 
   tasks:
-    - name: Update and upgrade the system
-      ansible.builtin.command: sudo apt update && sudo apt upgrade -y
-      register: upgrade_result
-      changed_when: "'0 upgraded' not in upgrade_result.stdout"
+    - name: Update the apt package index
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+        force_apt_get: yes
       
     - name: Remove old Docker packages
       ansible.builtin.shell: |
@@ -45,15 +46,18 @@
         mode: '0644'
 
     - name: Add Docker's apt repository
-      ansible.builtin.command: |
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" |
-        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      ansible.builtin.shell: 
+        cmd: |
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" |
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     - name: Update and upgrade the system after adding Docker repository
-      ansible.builtin.command: sudo apt-get update && sudo apt update && sudo apt upgrade -y
-
+      ansible.builtin.command:
+        cmd: sudo apt-get update && sudo apt update && sudo apt upgrade -y
+      
     - name: Install Docker packages using command
-      ansible.builtin.command: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      ansible.builtin.shell: 
+        cmd: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
     - name: Wait for 20 seconds before running Rancher
       ansible.builtin.wait_for:
