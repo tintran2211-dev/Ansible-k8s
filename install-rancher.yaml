@@ -1,0 +1,65 @@
+---
+- name: Setup Docker on Ubuntu and Run Rancher
+  hosts: rancher
+  become: yes
+
+  tasks:
+    - name: Update the apt package index
+      ansible.builtin.apt:
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: 
+          - ca-certificates
+          - curl
+        state: present
+        force_apt_get: yes
+
+    - name: Create the /etc/apt/keyrings directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker's GPG key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+
+    - name: Change permissions of the Docker GPG key
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Add Docker's apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ ansible_architecture }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable"
+        state: present
+        filename: docker
+
+    - name: Update the apt package index after adding Docker's repository
+      ansible.builtin.apt:
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Install Docker packages
+      ansible.builtin.apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        force_apt_get: yes
+
+    - name: Wait for 100 seconds before running Rancher
+      ansible.builtin.wait_for:
+        timeout: 100
+
+    - name: Run Rancher container
+      become: yes
+      ansible.builtin.command:
+        cmd: sudo docker run --privileged -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher

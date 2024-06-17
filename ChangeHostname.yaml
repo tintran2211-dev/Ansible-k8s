@@ -1,0 +1,36 @@
+- name: Change hostname on Ubuntu
+  hosts: all
+  become: yes
+  vars:
+    new_hostname: "new-hostname"
+  tasks:
+    - name: Set the hostname in /etc/hostname
+      copy:
+        content: "{{ new_hostname }}\n"
+        dest: /etc/hostname
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Update /etc/hosts for localhost entry
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^(127\.0\.1\.1\s+).*'
+        line: '\1{{ new_hostname }}'
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes
+
+    - name: Update hostname immediately
+      hostname:
+        name: "{{ new_hostname }}"
+
+    - name: Ensure the hostname change is applied
+      reboot:
+        msg: "Rebooting to apply hostname changes"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: whoami

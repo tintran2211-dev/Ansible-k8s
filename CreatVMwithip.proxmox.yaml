@@ -1,0 +1,52 @@
+# - name: Create new VM using cloud-init with a username and password
+#   hosts: localhost
+#   gather_facts: no
+#   tasks:
+#     - name: Create and configure VM on Proxmox
+#       community.general.proxmox_kvm:
+#         node: pve
+#         api_user: root@pam
+#         api_password: 123456
+#         api_host: https://192.168.3.10:8006/api2/json
+#         validate_certs: no  # Tắt kiểm tra chứng chỉ SSL nếu sử dụng chứng chỉ tự ký
+#         name: vm1
+#         ide:
+#           ide2: 'local:cloudinit,format=qcow2'
+#         ciuser: ubuntu
+#         cipassword: 1
+#         searchdomains: 'mydomain.internal'
+#         nameservers: 1.1.1.1
+#         net:
+#           net0: 'virtio,bridge=vmbr0,tag=77'
+#         ipconfig:
+#           ipconfig0: 'ip=192.168.1.100/24,gw=192.168.1.1'
+
+- name: Create new VM using cloud-init with a username and password
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create and configure VM on Proxmox
+      community.general.proxmox_kvm:
+        node: pve
+        api_user: root@pam
+        api_password: 123456
+        api_host: 192.168.3.10:8006
+        name: vm2
+        memory: 2048
+        cores: 2
+        ide:
+          ide2: 'local-lvm:cloudinit,format=qcow2'
+        ciuser: ubuntu
+        cipassword: 1
+        searchdomains: 'mydomain.internal'
+        nameservers: 1.1.1.1
+        net:
+          net0: 'virtio,bridge=vmbr0,tag=77'
+        ipconfig:
+          ipconfig0: 'ip=192.168.1.100/24,gw=192.168.1.1'
+        ostype: l26
+        scsihw: virtio-scsi-pci
+        boot: c
+        bootdisk: scsi0
+        vga: serial0
+
