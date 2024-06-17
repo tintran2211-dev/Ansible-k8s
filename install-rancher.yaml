@@ -7,6 +7,7 @@
     - name: Update the apt package index
       ansible.builtin.apt:
         update_cache: yes
+        upgrade: dist
         force_apt_get: yes
 
     - name: Install required packages
@@ -42,7 +43,12 @@
     - name: Update the apt package index after adding Docker's repository
       ansible.builtin.apt:
         update_cache: yes
+        upgrade: dist
         force_apt_get: yes
+
+    - name: Wait for 100 seconds before running Rancher
+      ansible.builtin.wait_for:
+        timeout: 50
 
     - name: Install Docker packages
       ansible.builtin.apt:
@@ -57,7 +63,7 @@
 
     - name: Wait for 100 seconds before running Rancher
       ansible.builtin.wait_for:
-        timeout: 100
+        timeout: 60
 
     - name: Run Rancher container
       become: yes
