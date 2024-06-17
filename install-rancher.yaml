@@ -52,8 +52,10 @@
           sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     - name: Update and upgrade the system after adding Docker repository
-      ansible.builtin.command:
-        cmd: sudo apt-get update && sudo apt update && sudo apt upgrade -y
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+        force_apt_get: yes
       
     - name: Install Docker packages using command
       ansible.builtin.shell: 
