@@ -1,50 +1,37 @@
 ---
-- name: Deploy Rook Ceph
-  hosts: servers
+- name: Triển khai Rook Ceph trên Kubernetes
+  hosts: server
   become: yes
-  vars:
-    rook_version: "v1.14.6"
-    rook_repo: "https://github.com/rook/rook.git"
-    rook_path: "/home/{{ ansible_user }}/rook"
-
   tasks:
-    - name: Install git if not present
-      ansible.builtin.package:
-        name: git
-        state: present
-
-    - name: Clone rook repository
+    - name: Clone repository Rook
       ansible.builtin.git:
-        repo: "{{ rook_repo }}"
-        dest: "{{ rook_path }}"
-        version: "{{ rook_version }}"
+        repo: https://github.com/rook/rook.git
+        dest: /path/to/destination/rook
+        version: v1.14.6
         single_branch: yes
 
-    - name: Create rook resources
-      become: yes
-      ansible.builtin.shell:
+    # - name: Chuyển sang đường dẫn rook/deploy/examples
+    #   ansible.builtin.shell: "cd /path/to/destination/rook/deploy/examples"
+    #   args:
+    #     chdir: /path/to/destination/rook/deploy/examples
+
+    - name: Khởi tạo rook-ceph operator
+      ansible.builtin.command:
         cmd: kubectl create -f crds.yaml -f common.yaml -f operator.yaml
       args:
-        chdir: "{{ rook_path }}/deploy/examples"
-      register: create_rook_resources
-      failed_when: "'Error' in create_rook_resources.stderr"
-      retries: 3
-      delay: 5
-      until: create_rook_resources is succeeded
+        chdir: /home/tctin/rook/deploy/examples
 
-    - name: Check Rook Ceph pods status
-      become: yes
+    - name: Kiểm tra trạng thái của pod rook-ceph-operator
       ansible.builtin.shell: 
-        cmd: kubectl get pods -n rook-ceph
-      register: rook_pods_status
-      until: rook_pods_status.stdout_lines | select("search", "Running") | list | length > 0
-      retries: 10
-      delay: 30
+        cmd: kubectl get pods -n rook-ceph -l app=rook-ceph-operator -o jsonpath='{.items[0].status.phase}'
+      register: operator_status
+      retries: 5
+      delay: 40
+      until: operator_status.stdout == "Running"
 
-    - name: Display Rook Ceph pods status
-      ansible.builtin.debug:
-        msg: "{{ rook_pods_status.stdout }}"
-
-    - name: Wait for 3 minutes to allow resources to initialize (optional)
-      ansible.builtin.pause:
-        minutes: 3
+    - name: Tạo rook-ceph cluster nếu pod rook-ceph-operator đang chạy
+      ansible.builtin.command:
+        cmd: kubectl create -f cluster.yaml
+      args:
+        chdir: /path/to/destination/rook/deploy/examples
+      when: operator_status.stdout == "Running"
