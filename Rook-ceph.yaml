@@ -5,7 +5,7 @@
   vars:
     rook_version: "v1.14.6"
     rook_repo: "https://github.com/rook/rook.git"
-    rook_path: "/opt/rook"
+    rook_path: "/home/{{ ansible_user }}/rook"
 
   tasks:
     - name: Install git if not present
@@ -16,11 +16,12 @@
     - name: Clone rook repository
       ansible.builtin.git:
         repo: "{{ rook_repo }}"
-        dest: "{{ rook_path }}"
+        dest: "home{{ rook_path }}"
         version: "{{ rook_version }}"
         single_branch: yes
 
     - name: Create rook resources
+      become: yes
       ansible.builtin.shell:
         cmd: kubectl create -f crds.yaml -f common.yaml -f operator.yaml
       args:
@@ -32,6 +33,7 @@
       until: create_rook_resources is succeeded
 
     - name: Check Rook Ceph pods status
+      become: yes
       ansible.builtin.shell: 
         cmd: kubectl get pods -n rook-ceph
       register: rook_pods_status
