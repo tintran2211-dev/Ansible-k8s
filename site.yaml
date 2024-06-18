@@ -38,4 +38,11 @@
   roles:
     - role: add-workernodes
 
+- name: Join worker nodes to Kubernetes cluster
+  hosts: ranchers
+  gather_facts: True
+  become: True
+  roles:
+    - role: rancher
+
 
