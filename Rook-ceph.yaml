@@ -16,7 +16,7 @@
     - name: Clone rook repository
       ansible.builtin.git:
         repo: "{{ rook_repo }}"
-        dest: "home{{ rook_path }}"
+        dest: "{{ rook_path }}"
         version: "{{ rook_version }}"
         single_branch: yes
 

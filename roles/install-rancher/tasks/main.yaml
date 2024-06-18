@@ -76,4 +76,4 @@
 
 - name: Wait for 20 seconds before running Rancher
   ansible.builtin.wait_for:
-    timeout: 70
+    timeout: 40

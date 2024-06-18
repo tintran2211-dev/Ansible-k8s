@@ -1,19 +1,87 @@
 ---
-- name: Get Bootstrap Password from Rancher Container
+- name: Install rancher
   hosts: ranchers  # Điều này có thể thay đổi tùy thuộc vào cấu hình inventory của bạn
+  become: yes
   gather_facts: no
 
   tasks:
-    - name: Get container facts
-      community.docker.docker_container_info:
-        name:  recursing_haibt
-      register: result
+- name: Update the apt package index
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+    force_apt_get: yes
+      
+- name: Remove old Docker packages
+  become: yes
+  ansible.builtin.shell: |
+    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
+      sudo apt-get remove -y $pkg
+    done
 
-    - name: Does container exist
-      ansible.builtin.debug:
-        msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+- name: Update the apt package index
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+    force_apt_get: yes
 
-    - name: Print info
-      ansible.builtin.debug:
-        var: result.container
-      when: result.exists
+- name: Install required packages
+  become: yes
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+    state: present
+    force_apt_get: yes
+
+- name: Create the /etc/apt/keyrings directory
+  become: yes
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Docker's GPG key
+  become: yes
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+
+- name: Change permissions of the Docker GPG key
+  become: yes
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+
+- name: Add Docker's apt repository
+  become: yes
+  ansible.builtin.shell: 
+    cmd: |
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" |
+      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+- name: Update and upgrade the system after adding Docker repository
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+    force_apt_get: yes
+      
+- name: Install Docker packages using command
+  become: yes
+  ansible.builtin.shell: 
+    cmd: sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+- name: Wait for 20 seconds before running Rancher
+  ansible.builtin.wait_for:
+    timeout: 20
+
+- name: Run Rancher container
+  become: yes
+  ansible.builtin.command:
+    cmd: sudo docker run --privileged -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher
+
+- name: Wait for 20 seconds before running Rancher
+  ansible.builtin.wait_for:
+    timeout: 40
+
