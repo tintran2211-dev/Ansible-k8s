@@ -1,0 +1,53 @@
+---
+- name: Deploy Rook Ceph
+  hosts: servers
+  become: yes
+  vars:
+    rook_version: "v1.14.6"
+    rook_repo: "https://github.com/rook/rook.git"
+    rook_path: "/opt/rook"
+
+  tasks:
+    - name: Install git if not present
+      ansible.builtin.package:
+        name: git
+        state: present
+
+    - name: Clone rook repository
+      ansible.builtin.git:
+        repo: "{{ rook_repo }}"
+        dest: "{{ rook_path }}"
+        version: "{{ rook_version }}"
+        single_branch: yes
+
+    - name: Change directory to rook/deploy/examples
+      ansible.builtin.command:
+        cmd: "cd {{ rook_path }}/deploy/examples"
+      args:
+        chdir: "{{ rook_path }}/deploy/examples"
+
+    - name: Create rook resources
+      ansible.builtin.command:
+        cmd: "kubectl create -f crds.yaml -f common.yaml -f operator.yaml"
+      args:
+        chdir: "{{ rook_path }}/deploy/examples"
+      register: create_rook_resources
+      failed_when: "'Error' in create_rook_resources.stderr"
+      retries: 3
+      delay: 5
+      until: create_rook_resources is succeeded
+
+    - name: Check Rook Ceph pods status
+      ansible.builtin.command: "kubectl get pods -n rook-ceph"
+      register: rook_pods_status
+      until: rook_pods_status.stdout_lines | search("Running")
+      retries: 10
+      delay: 30
+
+    - name: Display Rook Ceph pods status
+      ansible.builtin.debug:
+        msg: "{{ rook_pods_status.stdout }}"
+
+    - name: Wait for 3 minutes to allow resources to initialize (optional)
+      ansible.builtin.pause:
+        minutes: 3

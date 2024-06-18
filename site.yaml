@@ -1,7 +1,7 @@
-- name: Update all nodes
+- name: Update and install all nodes
   hosts: servers, workers
-  gather_facts: true
-  become: yes
+  gather_facts: True
+  become: True
   roles:
     - role: update-nodes
     - role: prepare-nodes
@@ -10,15 +10,15 @@
 
 - name: Initialize Kubernetes cluster
   hosts: servers
-  gather_facts: true
-  become: yes
+  gather_facts: True
+  become: True
   roles:
     - role: init-cluster
 
 - name: Fetch join command from master
   hosts: servers
-  gather_facts: true
-  become: yes
+  gather_facts: True
+  become: True
   roles:
     - role: fetch-joincommand
 
@@ -33,8 +33,8 @@
 
 - name: Join worker nodes to Kubernetes cluster
   hosts: workers
-  gather_facts: true
-  become: yes
+  gather_facts: True
+  become: True
   roles:
     - role: add-workernodes
 
