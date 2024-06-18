@@ -10,13 +10,14 @@
         version: v1.14.6
         single_branch: yes
 
-    # - name: Chuyển sang đường dẫn rook/deploy/examples
-    #   ansible.builtin.shell: "cd /path/to/destination/rook/deploy/examples"
-    #   args:
-    #     chdir: /path/to/destination/rook/deploy/examples
+    - name: Chuyển sang đường dẫn rook/deploy/examples
+      ansible.builtin.shell: 
+        cmd: cd /home/tctin/rook/deploy/examples
+      args:
+        chdir: /home/tctin/rook/deploy/examples
 
     - name: Khởi tạo rook-ceph operator
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: kubectl create -f crds.yaml -f common.yaml -f operator.yaml
       args:
         chdir: /home/tctin/rook/deploy/examples
