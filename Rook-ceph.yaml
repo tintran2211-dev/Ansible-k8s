@@ -20,15 +20,9 @@
         version: "{{ rook_version }}"
         single_branch: yes
 
-    - name: Change directory to rook/deploy/examples
-      ansible.builtin.command:
-        cmd: "cd {{ rook_path }}/deploy/examples"
-      args:
-        chdir: "{{ rook_path }}/deploy/examples"
-
     - name: Create rook resources
-      ansible.builtin.command:
-        cmd: "kubectl create -f crds.yaml -f common.yaml -f operator.yaml"
+      ansible.builtin.shell:
+        cmd: kubectl create -f crds.yaml -f common.yaml -f operator.yaml
       args:
         chdir: "{{ rook_path }}/deploy/examples"
       register: create_rook_resources
@@ -38,9 +32,10 @@
       until: create_rook_resources is succeeded
 
     - name: Check Rook Ceph pods status
-      ansible.builtin.command: "kubectl get pods -n rook-ceph"
+      ansible.builtin.shell: 
+        cmd: kubectl get pods -n rook-ceph
       register: rook_pods_status
-      until: rook_pods_status.stdout_lines | search("Running")
+      until: rook_pods_status.stdout_lines | select("search", "Running") | list | length > 0
       retries: 10
       delay: 30
 
