@@ -1,3 +1,10 @@
+---
+- name: Install rancher
+  hosts: ranchers  # Điều này có thể thay đổi tùy thuộc vào cấu hình inventory của bạn
+  become: yes
+  gather_facts: no
+
+  tasks:
 - name: Update the apt package index
   become: yes
   ansible.builtin.apt:

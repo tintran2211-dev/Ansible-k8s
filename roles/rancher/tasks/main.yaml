@@ -7,10 +7,11 @@
       
 - name: Remove old Docker packages
   become: yes
-  ansible.builtin.shell: |
-    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-      sudo apt-get remove -y $pkg
-    doneSSS
+  ansible.builtin.shell: 
+    cmd: |
+      for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
+        sudo apt-get remove -y $pkg
+      doneSSS
 
 - name: Update the apt package index
   become: yes
