@@ -11,7 +11,7 @@
     cmd: |
       for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
         sudo apt-get remove -y $pkg
-      doneSSS
+      done
 
 - name: Update the apt package index
   become: yes
@@ -75,7 +75,6 @@
   ansible.builtin.command:
     cmd: sudo docker run --privileged -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher
 
-- name: Wait for 20 seconds before running Rancher
+- name: Wait for 40 seconds after running Rancher
   ansible.builtin.wait_for:
     timeout: 40
-
