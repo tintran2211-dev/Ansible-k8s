@@ -45,4 +45,10 @@
   roles:
     - role: rancher
 
+- name: Join worker nodes to Kubernetes cluster
+  hosts: servers
+  become: True
+  roles:
+    - role: rook-ceph
+
 
