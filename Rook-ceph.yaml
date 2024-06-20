@@ -41,7 +41,7 @@
         register: kubernetes_status
         retries: 5
         delay: 15
-        until: kubernetes_status.rc != 0
+        until: kubernetes_status.rc == 0
         environment:
           KUBECONFIG: /home/{{ ansible_user }}/.kube/config
 
