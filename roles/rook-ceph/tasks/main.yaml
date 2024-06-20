@@ -1,9 +1,12 @@
-- name: Kiểm tra trạng thái của các node
+- name: Kiểm tra trạng thái của các node Kubernetes
   ansible.builtin.shell:
     cmd: kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}' | grep -q "False"
-  register: nodes_not_ready
-  ignore_errors: yes
-  changed_when: false
+  register: kubernetes_status
+  retries: 3
+  delay: 15
+  until: kubernetes_status.rc != 0
+  environment:
+    KUBECONFIG: /home/{{ ansible_user }}/.kube/config
 
 - name: Clone repository Rook
   ansible.builtin.git:
@@ -11,7 +14,9 @@
     dest: /home/{{ ansible_user }}/rook
     version: v1.14.6
     single_branch: yes
-  when: nodes_not_ready.rc == 1  # Chỉ chạy khi không có node nào đang ở trạng thái NotReady
+  retries: 3
+  delay: 20
+  when: kubernetes_status.rc == 0  # Chỉ chạy khi tất cả các node đều ở trạng thái "Ready"
 
 - name: Khởi tạo rook-ceph operator
   ansible.builtin.shell:
@@ -19,7 +24,7 @@
     chdir: /home/{{ ansible_user }}/rook/deploy/examples
   environment:
     KUBECONFIG: /home/{{ ansible_user }}/.kube/config
-  when: nodes_not_ready.rc == 1  # Chỉ chạy khi không có node nào đang ở trạng thái NotReady
+  when: kubernetes_status.rc == 0  # Chỉ chạy khi tất cả các node đều ở trạng thái "Ready"
 
 - name: Kiểm tra trạng thái của pod rook-ceph-operator
   ansible.builtin.shell:
@@ -30,12 +35,12 @@
   until: operator_status.stdout == "Running"
   environment:
     KUBECONFIG: /home/{{ ansible_user }}/.kube/config
-  when: nodes_not_ready.rc == 1  # Chỉ chạy khi không có node nào đang ở trạng thái NotReady
+  when: kubernetes_status.rc == 0  # Chỉ chạy khi tất cả các node đều ở trạng thái "Ready"
 
 - name: Tạo rook-ceph cluster nếu pod rook-ceph-operator đang chạy
   ansible.builtin.command:
     cmd: kubectl create -f cluster.yaml
     chdir: /home/{{ ansible_user }}/rook/deploy/examples
-  when: operator_status.stdout == "Running" and nodes_not_ready.rc == 1  # Chỉ chạy khi pod đang chạy và không có node nào đang ở trạng thái NotReady
+  when: operator_status.stdout == "Running" and kubernetes_status.rc == 0  # Chỉ chạy khi pod đang chạy và tất cả các node đều ở trạng thái "Ready"
   environment:
     KUBECONFIG: /home/{{ ansible_user }}/.kube/config
