@@ -4,5 +4,7 @@
 # kube_admin_key: "{{ kubernetes_admin_key_base64_encoded_content }}"
 
 ansible_user: tctin
+ansible_connection: ssh
+ansible_password: 1
 ansible_become: true
 ansible_become_method: sudo

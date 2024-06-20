@@ -8,7 +8,7 @@
 - name: Clone repository Rook
   ansible.builtin.git:
     repo: https://github.com/rook/rook.git
-    dest: /home/tctin/rook
+    dest: /home/{{ ansible_user }}/rook
     version: v1.14.6
     single_branch: yes
   when: nodes_not_ready.rc == 1  # Chỉ chạy khi không có node nào đang ở trạng thái NotReady
@@ -16,9 +16,9 @@
 - name: Khởi tạo rook-ceph operator
   ansible.builtin.shell:
     cmd: kubectl create -f crds.yaml -f common.yaml -f operator.yaml
-    chdir: /home/tctin/rook/deploy/examples
+    chdir: /home/{{ ansible_user }}/rook/deploy/examples
   environment:
-    KUBECONFIG: /home/tctin/.kube/config
+    KUBECONFIG: /home/{{ ansible_user }}/.kube/config
   when: nodes_not_ready.rc == 1  # Chỉ chạy khi không có node nào đang ở trạng thái NotReady
 
 - name: Kiểm tra trạng thái của pod rook-ceph-operator
@@ -29,13 +29,13 @@
   delay: 40
   until: operator_status.stdout == "Running"
   environment:
-    KUBECONFIG: /home/tctin/.kube/config
+    KUBECONFIG: /home/{{ ansible_user }}/.kube/config
   when: nodes_not_ready.rc == 1  # Chỉ chạy khi không có node nào đang ở trạng thái NotReady
 
 - name: Tạo rook-ceph cluster nếu pod rook-ceph-operator đang chạy
   ansible.builtin.command:
     cmd: kubectl create -f cluster.yaml
-    chdir: /home/tctin/rook/deploy/examples
+    chdir: /home/{{ ansible_user }}/rook/deploy/examples
   when: operator_status.stdout == "Running" and nodes_not_ready.rc == 1  # Chỉ chạy khi pod đang chạy và không có node nào đang ở trạng thái NotReady
   environment:
-    KUBECONFIG: /home/tctin/.kube/config
+    KUBECONFIG: /home/{{ ansible_user }}/.kube/config
