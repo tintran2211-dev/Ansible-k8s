@@ -3,6 +3,8 @@
     update_cache: yes
     upgrade: dist
     force_apt_get: yes
+  retries: 4
+  delay: 10
 
 - name: Install essential packages
   ansible.builtin.apt:
