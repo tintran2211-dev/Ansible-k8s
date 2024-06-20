@@ -1,6 +1,6 @@
 - name: Kiểm tra trạng thái của các node Kubernetes
   ansible.builtin.shell:
-    cmd: kubectl get nodes -o jsonpath='{range .items[*]}{.status.conditions[?(@.type=="Ready")].status}{"\n"}{end}' | grep -q "False"
+    cmd: kubectl get nodes -o jsonpath='{range .items[*]}{.status.conditions[?(@.type=="Ready")].status}{"\n"}{end}'
   register: kubernetes_status
   retries: 5
   delay: 15
