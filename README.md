@@ -92,10 +92,13 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
     $ ansible -i inventory/hosts.ini -m ping all -K
 
     Chú thích: 
+    
         - i nghĩa là inventory để chỉ định tệp inventory hoặc danh sách các host mà bạn muốn Ansible tương tác
+        
         - inventory/hosts.ini là đường dẫn lưu trữ host-ip
-        - K là sử dụng becompassword để nâng cao quyền, cho phép các tác 
-        vụ được thực hiện với quyền của người dùng khác, thường là root.
+        
+        - K là sử dụng becompassword để nâng cao quyền, cho phép các tác vụ được thực hiện với quyền của người dùng khác, thường là root.
+        
         - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
         3 điều chỉnh đúng thông số yêu cầu.
 
