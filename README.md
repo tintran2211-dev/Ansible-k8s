@@ -28,7 +28,7 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 |--------------|--------------|---------------|--------------|-----------------|---------------|
 |  rancher     | 192.168.x.x  |      4096     |      2       |     30GB        |  Ubuntu 22-04 |
 
-
+Chú thích: host rancher để cài riêng Rancher mục đích để quản lý cluster k8s thông qua giao diện trực quan.
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
@@ -55,6 +55,7 @@ Bước2: Điều chỉnh file inventory
 - group_vars là đường dẫn chứa các file lưu trữ các biến chung của ansilbe mặc định.
 
 - Trong file all.yaml cần điều chỉnh: 
+
 ansible_user là tên đăng nhập của các node
 
 ansible_password: là mật khẩu đăng nhập của các node
@@ -62,26 +63,30 @@ ansible_password: là mật khẩu đăng nhập của các node
 Khuyến cáo: Khi tạo máy build cụm nên đặt chung tên đăng nhập và mật khẩu để dễ quản lý
 
 Bước3: Tạo public key ssh cho host romte ansible và copy public key public sang các hosts muốn điều khiển
+
 1. Cài đặt ssh tạo public key cho ssh trên máy điều khiển bằng lệnh sau:
 
 $ ssh-keygen -t rsa
 
-2. Cách copy pubublic key từ host remote sang các host muốn điều khiển
+2. Cách copy public key từ host remote sang các host muốn điều khiển
 
-$ cd path/to/yourProjectansible
+Trên máy remote chúng ta chuyển đến đường dẫn thư mục project được clone về máy.
 
-example: 
-$ cd ansible
+ví dụ:
+
+$ cd Ansible-K8s
+
+Sau đó chạy lệnh sau để copy public key từ host remote sang các host muốn điều khiển.
 
 $ ansible-playbook -i inventory/hosts.ini SSH.yaml -K
 
 
-Bước4: Ping thử kiểm tra các máy bằng ansible 
+Bước4: Ping thử kiểm tra các hosts máy bằng ansible 
 
 $ ansible -i inventory/hosts.ini -m ping all -K
 
 Chú thích: 
-- inventory/hosts.ini là đường dẫn lưu chữ host-ip
+- inventory/hosts.ini là đường dẫn lưu trữ host-ip
 - K là sử dụng becompassword để nâng cao quyền, cho phép các tác vụ được thực hiện với quyền của người dùng khác, thường là root
 
 Bước5: Chạy lệnh tự động build cụm
