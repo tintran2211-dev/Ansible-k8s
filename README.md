@@ -11,23 +11,26 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 
 | Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
 |-----------|--------------|---------------|--------------|-----------------|---------------|
-|  ctl1     | 192.168.x.x  |      6192     |      2       | 40GB(tối thiểu) |  Ubuntu 22-04 |
+|  ctl1     | 192.168.x.x  |      6192     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 
 3 host worker
 
 | Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
 |-----------|--------------|---------------|--------------|-----------------|---------------|
-|  mon1     | 192.168.x.x  |      4096     |      2       | 40GB(tối thiểu) |  Ubuntu 22-04 |
-|  mon2     | 192.168.x.x  |      4096     |      2       | 40GB(tối thiểu) |  Ubuntu 22-04 |
-|  mon3     | 192.168.x.x  |      4096     |      2       | 40GB(tối thiểu) |  Ubuntu 22-04 |
+|  mon1     | 192.168.x.x  |      2048    |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
+|  mon2     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
+|  mon3     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 
-1 host rancher
+1 host rancher(node Rancher để quản lý cluster thông qua giao diện web)
 
 |    Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
 |--------------|--------------|---------------|--------------|-----------------|---------------|
-|  rancher     | 192.168.x.x  |      4096     |      2       |     30GB        |  Ubuntu 22-04 |
-
-Chú thích: host rancher để cài riêng Rancher mục đích để quản lý cluster k8s thông qua giao diện trực quan.
+|  rancher     | 192.168.x.x  |      2048     |      2       |     20GB        |  Ubuntu 22-04 |
+Lưu ý: 
+    - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
+    - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏ
+    tài nguyên của hệ thống lên khuyến khích bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh 
+    tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
@@ -86,11 +89,13 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
     $ ansible -i inventory/hosts.ini -m ping all -K
 
     Chú thích: 
+        - i nghĩa là inventory để chỉ định tệp inventory hoặc danh sách các host mà bạn muốn Ansible tương tác
         - inventory/hosts.ini là đường dẫn lưu trữ host-ip
         - K là sử dụng becompassword để nâng cao quyền, cho phép các tác 
         vụ được thực hiện với quyền của người dùng khác, thường là root.
-        - Ping kiểm nếu các host phản hồi trạng thái OK thì tiếp tục chạy bước 5, 
-        nếu phản hồi trạng thái failed hoặc unreachable thì kiểm tra lại bước 2 xem đã điều chỉnh đúng thông tin host chưa.
+        - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, 
+        còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
+        3 điều chỉnh đúng thông số yêu cầu.
 
 **Bước5: Chạy lệnh tự động build cụm**
 
