@@ -61,7 +61,7 @@ Bước2: Điều chỉnh file inventory
 
     ansible_password: là mật khẩu đăng nhập của các node
 
-Khuyến cáo: Khi tạo máy build cụm nên đặt chung tên đăng nhập và mật khẩu để dễ quản lý
+Gợi ý: Khi tạo máy build cụm nên đặt chung tên đăng nhập và mật khẩu để dễ quản lý
 
 Bước3: Tạo public key ssh cho host romte ansible và copy public key public sang các hosts muốn điều khiển
 
