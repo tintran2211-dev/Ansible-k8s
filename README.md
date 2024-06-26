@@ -81,13 +81,16 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
         $ ansible-playbook -i inventory/hosts.ini SSH.yaml -K
 
 
-**Bước4: Ping thử kiểm tra các hosts máy bằng ansible**
+**Bước4: Ping kiểm tra các hosts máy bằng ansible**
 
     $ ansible -i inventory/hosts.ini -m ping all -K
 
     Chú thích: 
         - inventory/hosts.ini là đường dẫn lưu trữ host-ip
-        - K là sử dụng becompassword để nâng cao quyền, cho phép các tác vụ được thực hiện với quyền của người dùng khác, thường là root
+        - K là sử dụng becompassword để nâng cao quyền, cho phép các tác 
+        vụ được thực hiện với quyền của người dùng khác, thường là root.
+        - Ping kiểm nếu các host phản hồi trạng thái OK thì tiếp tục chạy bước 5, 
+        nếu phản hồi trạng thái failed hoặc unreachable thì kiểm tra lại bước 2 xem đã điều chỉnh đúng thông tin host chưa.
 
 **Bước5: Chạy lệnh tự động build cụm**
 
