@@ -32,9 +32,8 @@ Lưu ý:
 
     - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
     
-    - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏ
-    tài nguyên của hệ thống lên khuyến khích bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh 
-    tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
+    - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏtài nguyên của hệ thống lên khuyến khích 
+    bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
@@ -97,8 +96,7 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
         - inventory/hosts.ini là đường dẫn lưu trữ host-ip
         - K là sử dụng becompassword để nâng cao quyền, cho phép các tác 
         vụ được thực hiện với quyền của người dùng khác, thường là root.
-        - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, 
-        còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
+        - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
         3 điều chỉnh đúng thông số yêu cầu.
 
 **Bước5: Chạy lệnh tự động build cụm**
