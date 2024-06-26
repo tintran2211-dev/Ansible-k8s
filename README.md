@@ -53,8 +53,8 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
     1. hosts.ini:
 
-    - File này là file lưu trữ tất cả các hostname và địa chỉ ip của của các node, nên trước khi chạy cần 
-    điều chỉnh cho đúng địa chỉ ip và hosnamet trước khi chạy.
+    - File này là file lưu trữ tất cả các hostname và địa chỉ ip của của các host, nên trước khi chạy cần 
+    điều chỉnh cho đúng địa chỉ ip và hostname trước khi chạy.
 
     2. group_vars/all.yaml
 
@@ -62,9 +62,9 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
         - Trong file all.yaml cần điều chỉnh các biến sau cho phù hợp: 
 
-            ansible_user: là tên đăng nhập của các node
+            ansible_user: là tên đăng nhập của các host
 
-            ansible_password: là mật khẩu đăng nhập của các node
+            ansible_password: là mật khẩu đăng nhập của các host
 
     Gợi ý: Khi tạo máy build cụm nên đặt chung tên đăng nhập và mật khẩu để dễ quản lý
 
@@ -93,14 +93,14 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
     Chú thích: 
     
-        - i nghĩa là inventory để chỉ định tệp inventory hoặc danh sách các host mà bạn muốn Ansible tương tác
+    - i nghĩa là inventory để chỉ định tệp inventory hoặc danh sách các host mà bạn muốn Ansible tương tác
         
-        - inventory/hosts.ini là đường dẫn lưu trữ host-ip
+    - inventory/hosts.ini là đường dẫn lưu trữ host-ip
         
-        - K là sử dụng becompassword để nâng cao quyền, cho phép các tác vụ được thực hiện với quyền của người dùng khác, thường là root.
+    - K là sử dụng becompassword để nâng cao quyền, cho phép các tác vụ được thực hiện với quyền của người dùng khác, thường là root.
         
-        - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
-        3 điều chỉnh đúng thông số yêu cầu.
+    - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi là failed hoặc unreachable 
+    thì kiểm tra lại bước 2 và bước 3 điều chỉnh đúng thông số yêu cầu.
 
 **Bước5: Chạy lệnh tự động build cụm**
 
