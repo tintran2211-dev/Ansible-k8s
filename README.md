@@ -17,7 +17,7 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 
 | Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
 |-----------|--------------|---------------|--------------|-----------------|---------------|
-|  mon1     | 192.168.x.x  |      2048    |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
+|  mon1     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 |  mon2     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 |  mon3     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 
@@ -32,8 +32,9 @@ Lưu ý:
 
     - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
     
-    - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏtài nguyên của hệ thống lên khuyến khích 
-    bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
+    - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏ 
+    tài nguyên của hệ thống lên khuyến khích bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh 
+    tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
@@ -53,25 +54,28 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
     1. hosts.ini:
 
-    - File này là file lưu trữ tất cả các hostname và địa chỉ ip của của các host, nên trước khi chạy cần 
-    điều chỉnh cho đúng địa chỉ ip và hostname trước khi chạy.
+    - File này là file lưu trữ tất cả các hostname và địa chỉ ip của của các host, nên trước khi 
+    chạy cần điều chỉnh cho đúng địa chỉ ip và hostname trước khi chạy.
 
     2. group_vars/all.yaml
 
-        - group_vars là đường dẫn chứa các file lưu trữ các biến chung của ansilbe mặc định.
+    - group_vars là đường dẫn chứa các file lưu trữ các biến chung của ansilbe mặc định.
 
-        - Trong file all.yaml cần điều chỉnh các biến sau cho phù hợp: 
+    - Trong file all.yaml cần điều chỉnh các biến sau cho phù hợp: 
 
-            ansible_user: là tên đăng nhập của các host
+        ansible_user: là tên đăng nhập của các host
 
-            ansible_password: là mật khẩu đăng nhập của các host
+        ansible_password: là mật khẩu đăng nhập của các host
 
     Gợi ý: Khi tạo máy build cụm nên đặt chung tên đăng nhập và mật khẩu để dễ quản lý
 
-**Bước3: Tạo public key ssh cho host romte ansible và copy public key public sang các hosts muốn điều khiển**
+**Bước3: Tạo public key ssh cho host remote ansible và copy public key public sang các host muốn điều khiển**
 
     1. Cài đặt ssh tạo public key cho ssh trên máy điều khiển bằng lệnh sau:
+        $ sudo apt update
 
+        $ sudo apt install openssh-server
+        
         $ ssh-keygen -t rsa
 
     2. Cách copy public key từ host remote sang các host muốn điều khiển
@@ -92,15 +96,10 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
     $ ansible -i inventory/hosts.ini -m ping all -K
 
     Chú thích: 
-    
-    - i nghĩa là inventory để chỉ định tệp inventory hoặc danh sách các host mà bạn muốn Ansible tương tác
         
-    - inventory/hosts.ini là đường dẫn lưu trữ host-ip
-        
-    - K là sử dụng becompassword để nâng cao quyền, cho phép các tác vụ được thực hiện với quyền của người dùng khác, thường là root.
-        
-    - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi là failed hoặc unreachable 
-    thì kiểm tra lại bước 2 và bước 3 điều chỉnh đúng thông số yêu cầu.
+    - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, 
+    còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
+    3 điều chỉnh đúng thông số yêu cầu.
 
 **Bước5: Chạy lệnh tự động build cụm**
 
