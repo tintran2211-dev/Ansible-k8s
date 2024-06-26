@@ -96,11 +96,9 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
     $ ansible -i inventory/hosts.ini -m ping all -K
 
-    Chú thích: 
-        
-    - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, 
-    còn trạng thái phản hồi là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 
-    3 điều chỉnh đúng thông số yêu cầu.
+    Chú thích:  
+    - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi 
+    là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 3 điều chỉnh đúng thông số.
 
 **Bước5: Chạy lệnh tự động build cụm**
 
