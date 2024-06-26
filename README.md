@@ -21,7 +21,7 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 |  mon2     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 |  mon3     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 
-1 host rancher(node Rancher để quản lý cluster thông qua giao diện web)
+1 host rancher(Rancher quản lý cụm thông qua giao diện trực quan)
 
 |    Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
 |--------------|--------------|---------------|--------------|-----------------|---------------|
