@@ -27,8 +27,11 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 |--------------|--------------|---------------|--------------|-----------------|---------------|
 |  rancher     | 192.168.x.x  |      2048     |      2       |     20GB        |  Ubuntu 22-04 |
 
+
 Lưu ý: 
+
     - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
+    
     - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏ
     tài nguyên của hệ thống lên khuyến khích bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh 
     tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
