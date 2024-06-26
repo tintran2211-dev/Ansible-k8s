@@ -71,7 +71,8 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
 **Bước3: Tạo public key ssh cho host remote ansible và copy public key public sang các host muốn điều khiển**
 
-    1. Cài đặt ssh tạo public key cho ssh trên máy điều khiển bằng lệnh sau:
+    1. Cài đặt ssh và tạo public key ssh trên host remote Ansible bằng lệnh sau:
+    
         $ sudo apt update
 
         $ sudo apt install openssh-server
