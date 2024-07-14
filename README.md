@@ -1,12 +1,6 @@
 
 Cấu hình chuẩn bị build cụm khi dưới đây
 
-1 host remote để cài đặt ansible
-
-| Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
-|-----------|--------------|---------------|--------------|-----------------|---------------|
-|  remote   | 192.168.x.x  |      2048     |      2       |      15GB       |  Ubuntu 22-04 |
-
 1 host controllplane
 
 | Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
@@ -21,7 +15,13 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 |  mon2     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 |  mon3     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 
-1 host rancher(Rancher quản lý cụm thông qua giao diện trực quan)
+1 host remote để cài đặt ansible(Có thể có hoặc không)(*)
+
+| Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
+|-----------|--------------|---------------|--------------|-----------------|---------------|
+|  remote   | 192.168.x.x  |      2048     |      2       |      15GB       |  Ubuntu 22-04 |
+
+1 host rancher(Có thể có hoặc không)(**)
 
 |    Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
 |--------------|--------------|---------------|--------------|-----------------|---------------|
@@ -30,11 +30,14 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 
 Lưu ý: 
 
-    - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
+    - (*) Host remote là để cài ansible, nếu bạn ko muốn tạo riêng 1 host remote thì có thể cài vào
+    máy chính mà bạn muốn remote tuỳ chỉnh và đảm bảo rằng máy đó nó có thể ping tới các host khác trong mạng.
     
-    - Bạn có thể cài rancher lên host controll plane nhưng chú ý Rancher tiêu hao 1 phần ko nhỏ 
-    tài nguyên của hệ thống lên khuyến khích bạn tách tiêng ra 1 host riêng để dễ quản lý và tránh 
-    tiêu hao tài nguyên của host control plane gây mất ổn định hệ thống.
+    - (**) Host rancher là để cài đặt Rancher là một công cụ để quản lý cụm k8s thông qua giao diện trực quan,
+    host này có thể không cần cài nếu bạn ko muốn sử dụng giao diện UI quản lý các cụm tuỳ vào mục đích sử dụng 
+    của bạn.
+
+    - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
