@@ -3,13 +3,13 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 
 1 host controllplane
 
-| Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
+| Name      |      IP      |     Memory    |      Core    |      Disk       |      Os       |
 |-----------|--------------|---------------|--------------|-----------------|---------------|
 |  ctl1     | 192.168.x.x  |      6192     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 
 3 host worker
 
-| Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
+| Name      |      IP      |     Memory    |      Core    |      Disk       |      Os       |
 |-----------|--------------|---------------|--------------|-----------------|---------------|
 |  mon1     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
 |  mon2     | 192.168.x.x  |      2048     |      2       | 30GB(tối thiểu) |  Ubuntu 22-04 |
@@ -17,13 +17,13 @@ Cấu hình chuẩn bị build cụm khi dưới đây
 
 1 host remote để cài đặt ansible(Có thể có hoặc không)(*)
 
-| Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
+| Name      |      IP      |     Memory    |      Core    |      Disk       |      Os       |
 |-----------|--------------|---------------|--------------|-----------------|---------------|
 |  remote   | 192.168.x.x  |      2048     |      2       |      15GB       |  Ubuntu 22-04 |
 
 1 host rancher(Có thể có hoặc không)(**)
 
-|    Name      |      Ip      |     Memory    |      Core    |      Disk       |      Os       |
+|    Name      |      IP      |     Memory    |      Core    |      Disk       |      Os       |
 |--------------|--------------|---------------|--------------|-----------------|---------------|
 |  rancher     | 192.168.x.x  |      2048     |      2       |     20GB        |  Ubuntu 22-04 |
 
@@ -37,7 +37,7 @@ Lưu ý:
     host này có thể không cần cài nếu bạn ko muốn sử dụng giao diện UI quản lý các cụm tuỳ vào mục đích sử dụng 
     của bạn.
 
-    - Địa chỉ IP có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
+    - Địa chỉ IP của các host có thể cấu hình theo cách của bạn không nhất thiết phải giống cài đặt như trên.
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
