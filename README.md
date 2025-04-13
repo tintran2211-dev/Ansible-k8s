@@ -41,7 +41,7 @@ Lưu ý:
 
 Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đây để xây dựng cụm tự động
 
-**Bước1: Cài đặt ansible lên host remote**
+**Bước 1: Cài đặt ansible lên host remote**
 
     $ sudo apt update
 
@@ -53,7 +53,7 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
     Tham khảo thêm cách cài tại: https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html
 
-**Bước2: Điều chỉnh file inventory**
+**Bước 2: Điều chỉnh file inventory**
 
     1. hosts.ini:
 
@@ -72,7 +72,7 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
 
     Gợi ý: Khi tạo máy build cụm nên đặt chung tên đăng nhập và mật khẩu để dễ quản lý
 
-**Bước3: Tạo public key ssh cho host remote ansible và copy public key public sang các host muốn điều khiển**
+**Bước 3: Tạo public key ssh cho host remote ansible và copy public key public sang các host muốn điều khiển**
 
     1. Cài đặt ssh và tạo public key ssh trên host remote Ansible bằng lệnh sau:
     
@@ -95,7 +95,7 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
         $ ansible-playbook -i inventory/hosts.ini SSH.yaml -K
 
 
-**Bước4: Ping kiểm tra các hosts máy bằng ansible**
+**Bước 4: Ping kiểm tra các hosts máy bằng ansible**
 
     $ ansible -i inventory/hosts.ini -m ping all -K
 
@@ -103,7 +103,7 @@ Sau khi chuẩn bị cấu hình xong thì thực hiện các bước dưới đ
     - Ping kiểm tra nếu các host trạng thái phản hồi là OK thì tiếp tục chạy bước 5, còn trạng thái phản hồi 
     là failed hoặc unreachable thì kiểm tra lại bước 2 và bước 3 điều chỉnh đúng thông số.
 
-**Bước5: Chạy lệnh tự động build cụm**
+**Bước 5: Chạy lệnh tự động build cụm**
 
     $ ansible-playbook -i inventory/hosts.ini site.yaml -K
 
